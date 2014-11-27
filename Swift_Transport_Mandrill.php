@@ -1,5 +1,15 @@
 <?php
 
+namespace sonicgd\swiftmailer\mandrill;
+
+use Exception;
+use Mandrill;
+use Mandrill_Error;
+use Swift_Attachment;
+use Swift_Events_EventListener;
+use Swift_Mime_Message;
+use Swift_Transport;
+
 /**
  * Class Swift_Transport_Mandrill
  */
@@ -102,7 +112,11 @@ class Swift_Transport_Mandrill implements Swift_Transport
             //$send_at = gmdate('D, d M Y H:i:s T', time()-3600*10); ;
             //var_dump($send_at);
             $result = $this->mandrill->messages->send($message, $async, $ip_pool);
-            var_dump($result);
+            foreach ($result as $recepient) {
+                if ($recepient['status'] != 'queued') {
+                    throw new Exception('Mail to ' . $recepient['email'] . ' wasn\'t send');
+                }
+            }
         } catch (Mandrill_Error $e) {
             // Mandrill errors are thrown as exceptions
             echo 'A mandrill error occurred: ' . get_class($e) . ' - ' . $e->getMessage();
