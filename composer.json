@@ -1,0 +1,22 @@
+{
+  "name": "sonicgd/swiftmailer-mandrill",
+  "type": "library",
+  "description": "Swiftmailer transport for Mandrill",
+  "keywords": [
+    "mandrill",
+    "swiftmailer"
+  ],
+  "homepage": "https://github.com/sonicgd/sonicgd/swiftmailer-mandrill",
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "George Drak",
+      "email": "sonicgd@gmail.com"
+    }
+  ],
+  "require": {
+    "php": ">=5.3.3",
+    "swiftmailer/swiftmailer": "*",
+    "mandrill/mandrill": "1.0.*"
+  }
+}
