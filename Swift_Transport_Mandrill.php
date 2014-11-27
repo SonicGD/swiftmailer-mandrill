@@ -84,6 +84,8 @@ class Swift_Transport_Mandrill implements Swift_Transport
             }
             $attachments = [];
             $childrens = $message->getChildren();
+            $html = "";
+            $txt = "";
             foreach ($childrens as $children) {
                 if ($children instanceof Swift_Attachment) {
                     /**
@@ -94,29 +96,40 @@ class Swift_Transport_Mandrill implements Swift_Transport
                         'name'    => $children->getFilename(),
                         'content' => base64_encode($children->getBody())
                     ];
+                } elseif ($message->getBody() == null) {
+                    if ($children->getContentType() == 'text/html') {
+                        $html .= $children->getBody();
+                    } else {
+                        $txt .= $children->getBody();
+                    }
+                } else {
+                    if ($message->getContentType() == 'text/html') {
+                        $html .= $message->getBody();
+                    } else {
+                        $txt .= $message->getBody();
+                    }
                 }
             }
-            $message = array(
-                'html'        => $message->getBody(),
+            $mail = array(
+                'html'        => $html,
+                'txt'         => $txt,
                 'subject'     => $message->getSubject(),
                 'from_email'  => array_keys($from)[0],
-                'from_name'   => $from[0],
+                'from_name'   => reset($from),
                 'to'          => $to,
                 'headers'     => array('Reply-To' => $message->getReplyTo()),
                 'attachments' => $attachments,
             );
-            //var_dump($message);
-            //die();
             $async = false;
             $ip_pool = 'Main Pool';
-            //$send_at = gmdate('D, d M Y H:i:s T', time()-3600*10); ;
-            //var_dump($send_at);
-            $result = $this->mandrill->messages->send($message, $async, $ip_pool);
+
+            $result = $this->mandrill->messages->send($mail, $async, $ip_pool);
             foreach ($result as $recepient) {
-                if ($recepient['status'] != 'queued') {
+                if (!in_array($recepient['status'], ['queued', 'sent'])) {
                     throw new Exception('Mail to ' . $recepient['email'] . ' wasn\'t send');
                 }
             }
+            return true;
         } catch (Mandrill_Error $e) {
             // Mandrill errors are thrown as exceptions
             echo 'A mandrill error occurred: ' . get_class($e) . ' - ' . $e->getMessage();
