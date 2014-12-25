@@ -64,8 +64,9 @@ class Swift_Transport_Mandrill implements Swift_Transport
      * Recipient/sender data will be retrieved from the Message API.
      * The return value is the number of recipients who were accepted for delivery.
      *
-     * @param Swift_Mime_Message $message
-     * @param string[] $failedRecipients An array of failures by-reference
+     * @param Swift_Mime_Message|Swift_Message_Mandrill $message
+     * @param string[]                                  $failedRecipients An array of failures by-reference
+     *
      * @return int
      * @throws Exception
      * @throws Mandrill_Error
@@ -119,6 +120,7 @@ class Swift_Transport_Mandrill implements Swift_Transport
                 'to'          => $to,
                 'headers'     => array('Reply-To' => $message->getReplyTo()),
                 'attachments' => $attachments,
+                'tags'        => $message->getTags(),
             );
             $async = false;
             $ip_pool = 'Main Pool';
