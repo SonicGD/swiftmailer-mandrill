@@ -21,7 +21,7 @@
   },
   "require": {
     "php": ">=5.3.3",
-    "swiftmailer/swiftmailer": "*",
+    "swiftmailer/swiftmailer": "~5.4.0",
     "mandrill/mandrill": "1.0.*"
   }
 }
