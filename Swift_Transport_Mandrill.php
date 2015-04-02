@@ -121,6 +121,7 @@ class Swift_Transport_Mandrill implements Swift_Transport
                 'headers'     => array('Reply-To' => $message->getReplyTo()),
                 'attachments' => $attachments,
                 'tags'        => $message->getTags(),
+                'preserve_recipients' => false,
             );
             $async = false;
             $ip_pool = 'Main Pool';
